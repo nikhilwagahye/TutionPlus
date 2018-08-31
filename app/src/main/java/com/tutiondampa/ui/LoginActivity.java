@@ -31,11 +31,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextPassword;
     private Button buttonSignIn;
     private ProgressDialog progressDialogForAPI;
+    private String orgName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        orgName = getIntent().getStringExtra("ORG_NAME");
 
         initViews();
     }
@@ -89,7 +92,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void callLoginAPI(RequestBody body) {
-        Call<LoginResult> requestCallback = RestClient.getApiService(ApiConstants.BASE_URL).submitLogin(body);
+        String URL = "http://" + orgName + ".tuitionplus.in/api/";
+        Call<LoginResult> requestCallback = RestClient.getApiService(URL).submitLogin(body);
         requestCallback.enqueue(new Callback<LoginResult>() {
             @Override
             public void onResponse(Call<LoginResult> call, Response<LoginResult> response) {
@@ -97,14 +101,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     LoginResult result = response.body();
                     if (result.getSuccess().getToken() != null) {
-/*
-                        Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, StudentDetailsActivity.class);
                         startActivity(intent);
-                        finish();*/
-                        Toast.makeText(LoginActivity.this, " UserId:" + result.getSuccess().getUserId() + "Token::::  " + result.getSuccess().getToken() , Toast.LENGTH_SHORT).show();
+                        finish();
+                        //Toast.makeText(LoginActivity.this, " UserId:" + result.getSuccess().getUserId() + "Token::::  " + result.getSuccess().getToken(), Toast.LENGTH_SHORT).show();
 
                     }
-                }  else {
+                } else {
                     // Response code is 401
                     Toast.makeText(LoginActivity.this, "Unauthorized User", Toast.LENGTH_SHORT).show();
                 }

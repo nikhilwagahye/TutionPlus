@@ -90,6 +90,7 @@ public class CheckOrganizationActivity extends AppCompatActivity implements View
                     if (result.getSuccess() == true) {
 
                         Intent intent = new Intent(CheckOrganizationActivity.this, LoginActivity.class);
+                        intent.putExtra("ORG_NAME",result.getWorkspace());
                         startActivity(intent);
                         finish();
 
